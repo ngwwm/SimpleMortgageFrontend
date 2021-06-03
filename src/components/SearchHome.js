@@ -38,7 +38,6 @@ const SearchHome = (props) => {
       ...applicant,
       [evt.target.name]: value
     });
-    console.log(applicant);
   };
 
   /* Start Over Button*/
@@ -52,7 +51,7 @@ const SearchHome = (props) => {
 
   /* 1) That accepts an applicant details – first name, last name, date of birth and e-mail, and returns a unique ID */
   const selectInsertApplicantHandler = () => {
-    const url = process.env.REACT_APP_SIMPLEMORTGAGE_API_SERVER + '/applicants';
+    const url = process.env.REACT_APP_BACKEND_API_SERVER + '/applicants';
     const options = {
       method: 'post',
       headers: {
@@ -73,7 +72,7 @@ const SearchHome = (props) => {
         if (data.errors) {
           var err = JSON.stringify(data.errors);
           setMessage(err);
-          throw new Error(err);
+          console.error('Error:', err);          
         } else {          
           setMessage();
 		      setApplicant(() => {          
@@ -82,13 +81,14 @@ const SearchHome = (props) => {
         }
       })
       .catch((error) => {
+        setMessage(error.toString());
         console.error('Error:', error);
       });
   }
 
   /* 2)	That takes details of mortgage requirements – property value and deposit amount – along with a user ID, and returns a list of available products. */
   const searchMortgageProductHandler = () => {
-    const url = process.env.REACT_APP_SIMPLEMORTGAGE_API_SERVER + '/applicants/' + applicant.id + '/products';
+    const url = process.env.REACT_APP_BACKEND_API_SERVER + '/applicants/' + applicant.id + '/products';
     const params = {propertyVal: loan.propertyValue, depositAmt: loan.depositAmount}
    
     fetch(url + '?' + new URLSearchParams(params).toString())
@@ -98,14 +98,15 @@ const SearchHome = (props) => {
         if (data.errors) {
           var err = JSON.stringify(data.errors);
           setMessage(err);
-          throw new Error(err);
+          setProducts([]);
+          console.error('Error:', err);
         } else {          
           setMessage();
           setProducts(data);
         }
       })
       .catch((error) => {
-        console.error('Error:', error);
+        setMessage(error.toString());
         setProducts([]);
       });
   }
@@ -120,7 +121,7 @@ const SearchHome = (props) => {
             onNext={selectInsertApplicantHandler} 
             onSearch={searchMortgageProductHandler} 
             onStartOver={applicantStartOverHandler} />
-        <Message msg={message} />
+        <Message mesg={message} />
         <Products applicant={applicant} loan={loan} products={products} onSearch={searchMortgageProductHandler} />
       </div>
     )

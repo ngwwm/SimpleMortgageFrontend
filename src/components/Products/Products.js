@@ -31,7 +31,7 @@ const Products = (props) => {
 
   return (    
     <div>
-      <h1 id="tabelLabel" >Products</h1>
+      <h2 id="tabelLabel" >Mortgage Products</h2>
       <p>The available products will be listed below.</p>
       {renderProudctsTable()}
     </div>

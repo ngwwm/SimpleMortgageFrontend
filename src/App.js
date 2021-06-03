@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import SearchHome from './components/SearchHome';
-import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
 
 import './custom.css'
 
@@ -16,10 +14,6 @@ export default class App extends Component {
         <Route exact path='/'>
           <SearchHome />
         </Route>
-        {/*
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetch-data' component={FetchData} />
-        */}
       </Layout>
     );
   }
