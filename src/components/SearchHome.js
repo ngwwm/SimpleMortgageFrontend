@@ -22,6 +22,7 @@ const SearchHome = (props) => {
   
   const [message, setMessage] = useState();
 
+  /* Fields: Mortgage Details */
   const loanFieldsChangeHandler = evt => {
     const value = evt.target.value;
     setLoan({
@@ -30,6 +31,7 @@ const SearchHome = (props) => {
     });
   };
 
+  /* Input Fields: Applicant Details */
   const applicantFieldsChangeHandler = evt => {
     const value = evt.target.value;    
     setApplicant({
@@ -39,11 +41,13 @@ const SearchHome = (props) => {
     console.log(applicant);
   };
 
+  /* Start Over Button*/
   const applicantStartOverHandler = () => {
     setApplicant({
       ...applicant,
       id: 0
     });    
+    setProducts([]);
   };
 
   /* 1) That accepts an applicant details – first name, last name, date of birth and e-mail, and returns a unique ID */
@@ -67,12 +71,9 @@ const SearchHome = (props) => {
       .then(function (data) {
         console.log(data);
         if (data.errors) {
-          var err = JSON.stringify(data.errors)
+          var err = JSON.stringify(data.errors);
           setMessage(err);
           throw new Error(err);
-        } else if (data.error) {
-          setMessage(data.error);
-          throw new Error(data.error);
         } else {          
           setMessage();
 		      setApplicant(() => {          
@@ -93,18 +94,19 @@ const SearchHome = (props) => {
     fetch(url + '?' + new URLSearchParams(params).toString())
       .then(response => response.json())
       .then(function (data) {
-        //console.log(data);
-        if (data.error) {
-          setMessage(data.error);
-          setProducts([]);
-          throw new Error(data.error);
-        } else {
+        console.log(data);
+        if (data.errors) {
+          var err = JSON.stringify(data.errors);
+          setMessage(err);
+          throw new Error(err);
+        } else {          
           setMessage();
-          setProducts(data);          
+          setProducts(data);
         }
       })
       .catch((error) => {
         console.error('Error:', error);
+        setProducts([]);
       });
   }
 
