@@ -1,103 +1,71 @@
-import React, { useState } from 'react';
-import { parseISO } from 'date-fns'
+import React from 'react';
 
 import TextField from '@material-ui/core/TextField';
-import DatePicker from "react-datepicker";
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 
-//import classes from './Applicant.css'
 import { makeStyles } from '@material-ui/core/styles';
-import "react-datepicker/dist/react-datepicker.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
   },
-  textField: {
-    marginLeft: theme.spacing(1),
+  textField: {    
     marginRight: theme.spacing(1),
     width: '25ch',
   },
 }));
 
-const Applicant = () => {
+const Applicant = (props) => {
   const classes = useStyles();
-  const [ applicant, setApplicant] = useState({    
-      "id": 0,
-      "firstName": "",
-      "lastName": "",
-      "dob": "",
-      "email": ""          
-  });  
-  const [ propertyValue, setPropertyValue] = useState(100);
-  const [ depositAmount, setDepositAmount] = useState(1);
-
-  const selectInsertApplicantHandler = () => {
-    const url = process.env.REACT_APP_SIMPLEMORTGAGE_API_SERVER + '/applicants';
-    const options = {
-      method: 'post',
-      headers: {
-        "Content-type": "application/json; charset=UTF-8"
-      },
-      body:  JSON.stringify({
-        "firstName": "Martin",
-        "lastName": "NG",
-        "dob": "1997-07-01",
-        "email": "martinxxxx@gmail.xom"
-      })
-    };
-    fetch(url, options)
-      .then(response => response.json())
-      .then(function (data) {   
-        console.log(data);
-        setApplicant(() => {          
-          return Object.assign({}, {id: data.id, firstName: data.firstName, dob: parseISO(data.dob), lastName: data.lastName, email: data.email})
-        })
-      })
-      .catch((error) => {
-        console.error('Érror:', error);
-      });
-  }
-
-  const searchMortgageProductHandler = () => {
-    const url = process.env.REACT_APP_SIMPLEMORTGAGE_API_SERVER + '/products/applicant/' + applicant.id;
-    const params = {propertyVal: propertyValue, depositAmt: depositAmount}
-   
-    fetch(url + '?' + new URLSearchParams(params).toString())
-      .then(response => response.json())
-      .then(function (data) {         
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error('Érror:', error);
-      });
-  }
-
-  const propertyValueChangeHandler = event => {
-    setPropertyValue(event.target.value);
-  };
 
   return (
       <div>
         <h1>Hi There!</h1>
+
         <p>Welcome to Simple Mortgage App, simply provide us below basic information, we will get you started:</p>
-            <div className={classes.root} noValidate autoComplete="off">            
-              <div>
-                <TextField id="idFirstName" label="First Name" value={applicant.firstName} className={classes.textField} margin="dense" variant="outlined" />
-                <TextField id="idLastName" label="Last Name" value={applicant.lastName} className={classes.textField} margin="dense" variant="outlined" />
-                </div>
-                <div>                  
-                <DatePicker id="idDOB" placeholderText="Date of Birth" label="Date of Birth" dateFormat='yyyy-MM-dd' 
-                  selected={applicant.dob} onChange={(date) => setApplicant(preState => { return { ...preState, dob: date}})} />
-                  </div>
-                <TextField id="idEmail" label="Email" value={applicant.email} className={classes.textField} margin="dense" variant="outlined" />
-                <button className="btn btn-primary" onClick={selectInsertApplicantHandler}>Next</button>
-                <div>
-                <TextField id="idPropertyValue" className={classes.textField} value={propertyValue} onChange={propertyValueChangeHandler} label="Property Value £" margin="dense" variant="outlined" />
-                <TextField id="idDepositAmount" className={classes.textField} value={depositAmount} onChange={(amt) => setDepositAmount(amt.target.value)} label="Deposit Amount £" margin="dense" variant="outlined" />
-                </div>
-                <button className="btn btn-primary" onClick={searchMortgageProductHandler}>Search</button>
-            </div>
+            <div className={classes.root} noValidate autoComplete="off">                        
+              <Grid container spacing={0} direction="row" justify="flex-start" alignItems="baseline">
+                <Grid item xs={"auto"}>
+                  <TextField id="idFirstName" disabled={props.applicant.id > 0} label="First Name" name="firstName" value={props.applicant.firstName} onChange={props.onApplicantChange} className={classes.textField} margin="dense" variant="outlined" />
+                </Grid>
+                <Grid item xs={"auto"}>
+                  <TextField id="idLastName" disabled={props.applicant.id > 0} label="Last Name" name="lastName" value={props.applicant.lastName} onChange={props.onApplicantChange} className={classes.textField} margin="dense" variant="outlined" />
+                </Grid>
+              </Grid>
+              
+              <Grid container spacing={0} direction="row" justify="flex-start" alignItems="baseline">
+                <Grid item xs={"auto"}>
+                  <TextField id="idEmail" disabled={props.applicant.id > 0} label="Email" name="email" value={props.applicant.email} onChange={props.onApplicantChange} className={classes.textField} margin="dense" variant="outlined" />
+                </Grid>
+                <Grid item xs={"auto"}>
+                  <TextField id="idDOB" disabled={props.applicant.id > 0} label="Date of Birth" type="date"  name="dob" value={props.applicant.dob} onChange={props.onApplicantDatePickerChange} 
+                    className={classes.textField} margin="dense" variant="outlined"  InputLabelProps={{shrink: true}}/>
+                </Grid>
+              </Grid>              
+              <Grid container spacing={0} direction="row" justify="center" alignItems="baseline">
+                <Grid item xs={12}>
+                  <Button variant="contained" disabled={props.applicant.id > 0} color="primary" onClick={props.onNext} disableElevation>Continue</Button>
+                </Grid>
+              </Grid>  
+              <Grid container spacing={0} direction="row" justify="flex-start" alignItems="baseline">
+                <Grid item xs={"auto"}>
+                  <TextField id="idPropertyValue" disabled={props.applicant.id === 0} name="propertyValue" value={props.loan.propertyValue} onChange={props.onLoanChange} className={classes.textField} label="Property Value £" margin="dense" variant="outlined" />
+                </Grid>
+                <Grid item xs={"auto"}>
+                  <TextField id="idDepositAmount" disabled={props.applicant.id === 0} name="depositAmount" value={props.loan.depositAmount} onChange={props.onLoanChange} className={classes.textField} label="Deposit Amount £" margin="dense" variant="outlined" />
+                </Grid>  
+              </Grid>
+              <Grid container spacing={3} direction="row" justify="flex-start" alignItems="baseline">
+                <Grid item xs={"auto"}>
+                  <Button variant="contained" disabled={props.applicant.id === 0} color="primary" onClick={props.onSearch} disableElevation>Get Mortgage Plans</Button>                   
+                </Grid>
+                <Grid item xs={"auto"}>
+                  <Button variant="contained" disabled={props.applicant.id === 0} color="primary" onClick={props.onStartOver} disableElevation>Start Over</Button>
+                </Grid>  
+              </Grid>            
+            </div>            
       </div>
   );
 }
