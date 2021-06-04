@@ -14,7 +14,7 @@ const ErrorMessage = (props) => {
 
   return (    
     <div className={classes.root}>
-      {props.msg}
+      {props.mesg}
     </div>
   )  
 }
