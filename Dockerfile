@@ -12,5 +12,6 @@ USER root
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 COPY default.conf /etc/nginx/conf.d/default.conf
 RUN chmod g+w /var/cache/nginx/ 
+RUN chmod g+w /run
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
