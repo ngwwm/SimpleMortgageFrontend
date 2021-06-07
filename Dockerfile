@@ -8,6 +8,7 @@ RUN npm run build
 
 # Stage 2: Copy the JS React SPA into the Nginx HTML directory
 FROM nginx:1.21.0
+USER root
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 COPY default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 8080
