@@ -11,5 +11,6 @@ FROM nginx:1.21.0
 USER root
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 COPY default.conf /etc/nginx/conf.d/default.conf
+RUN chmod g+w /var/cache/nginx/ 
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
